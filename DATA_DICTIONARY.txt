@@ -1,0 +1,9 @@
+🏆 ISRO HACKATHON PS1: AI URBAN COOLING PLANNER
+=================================================
+01_Satellite_LST: Keep ISRO VEDAS or Landsat LST data here.
+02_Indices_NDVI_NDBI: Keep Sentinel-2 / Planetary Computer indices here.
+03_GIS_Boundaries: Keep HOT OSM Delhi shapefiles/GeoJSON here.
+04_Demographics: Keep WorldPop 100m population density raster here.
+05_Weather_Climate: Keep NASA POWER / IMD weather CSVs here.
+Processed_Data: Keep urban_cooling_dataset.csv here.
+Models: Keep cooling_ai_model.pkl here.

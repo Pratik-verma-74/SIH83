@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=web_app/templates/index.html">
+    <title>Redirecting to MoES Heatwave Early Warning System...</title>
+    <style>
+        body {
+            background: #0B0F19;
+            color: #FF5722;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .loader-card {
+            background: rgba(41, 18, 18, 0.8);
+            border: 1px solid #FF5722;
+            box-shadow: 0 0 30px rgba(255, 87, 34, 0.3);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border-left-color: #FF5722;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        a { color: #FF9800; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+    </style>
+    <script>
+        window.location.replace("web_app/templates/index.html");
+    </script>
+</head>
+<body>
+    <div class="loader-card">
+        <div class="spinner"></div>
+        <h2 style="margin: 0 0 10px 0; color: #fff;">MoES SIH 26083</h2>
+        <p style="color: #94A3B8; font-size: 14px; margin-bottom: 20px;">Initializing Extreme Heatwave Early Warning & Thermal Stress Engine...</p>
+        <p style="font-size: 13px;">If you are not redirected automatically, <br><br><a href="web_app/templates/index.html">➔ Click Here to Launch Dashboard</a></p>
+    </div>
+</body>
+</html>

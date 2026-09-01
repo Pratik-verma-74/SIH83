@@ -1,0 +1,9 @@
+ward_id,ward_name,zone,lst_temp_c,concrete_density_pct,green_cover_pct,soil_moisture_pct,vulnerability_score,population_density,source_credit
+W106,Chandni Chowk,Old Delhi,46.1,92,4,12,98,42000,ISRO VEDAS / Microsoft Planetary Computer / WorldPop
+W101,Connaught Place,Central Delhi,45.2,88,8,15,94,28000,ISRO VEDAS / Microsoft Planetary Computer / WorldPop
+W102,Karol Bagh,West Delhi,44.5,85,10,18,89,36000,ISRO VEDAS / Microsoft Planetary Computer / WorldPop
+W107,Gurgaon Cyber City,NCR South-West,44.2,84,11,16,86,22000,ISRO VEDAS / Microsoft Planetary Computer / WorldPop
+W103,Rohini Sector 18,North-West Delhi,43.8,82,12,20,82,31000,ISRO VEDAS / Microsoft Planetary Computer / WorldPop
+W105,Dwarka Sector 10,South-West Delhi,41.8,70,22,30,68,19000,ISRO VEDAS / Microsoft Planetary Computer / WorldPop
+W108,Noida Sector 62,NCR East,41.5,72,20,28,64,18000,ISRO VEDAS / Microsoft Planetary Computer / WorldPop
+W104,Saket,South Delhi,40.5,65,28,35,58,21000,ISRO VEDAS / Microsoft Planetary Computer / WorldPop

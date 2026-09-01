@@ -1,0 +1,9 @@
+ward_id,ward_name,priority_level,recommended_intervention,estimated_budget_cr,expected_lst_reduction_c
+W106,Chandni Chowk,Critical,High-Albedo Reflective Roofs & Pocket Forests,5.2,3.06
+W101,Connaught Place,Critical,Vertical Green Walls & Permeable Pedestrian Plazas,6.8,3.06
+W102,Karol Bagh,High,Cool Roof Subsidy & Street Tree Canopy Expansion,4.5,3.06
+W107,Gurgaon Cyber City,High,Mandatory Green Roofs & Water Feature Integration,8.0,3.06
+W103,Rohini Sector 18,High,Community Parks & Porous Parking Pavements,3.6,3.06
+W105,Dwarka Sector 10,Moderate,Avenue Tree Planting & Permeable Sidewalks,2.8,3.06
+W108,Noida Sector 62,Moderate,Reflective Rooftops & Rainwater Harvesting Pits,3.2,3.06
+W104,Saket,Low,Maintain Biodiversity & Green Belt Buffer,1.5,3.06

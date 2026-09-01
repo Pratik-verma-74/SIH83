@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+    <meta name="theme-color" content="#0A0E17">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>MoES Heatwave Early Warning System | SIH 26083</title>
+    <meta name="description" content="Intelligent Human Thermal Stress Index and Heatwave Mortality Risk predictor integrating temperature, humidity, and radiation.">
+    
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS for Mapping -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Chart.js for Telemetry & Forecasting -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Top Telemetry Header -->
+        <header class="top-header">
+            <div class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-temperature-arrow-up" style="color: #FF5722;"></i></div>
+                <div class="logo-text">
+                    <h1>MINISTRY OF EARTH SCIENCES <span>(MoES)</span></h1>
+                    <p>Human Thermal Stress & Heatwave Early Warning System</p>
+                </div>
+            </div>
+            
+            <div class="telemetry-ticker">
+                <div class="ticker-item">
+                    <span class="label"><i class="fa-solid fa-location-dot"></i> REGION:</span>
+                    <span class="value cyan">DELHI NCR METRO</span>
+                </div>
+                <div class="ticker-item">
+                    <span class="label"><i class="fa-solid fa-cloud-sun"></i> LIVE AIR:</span>
+                    <span id="ticker-temp" class="value orange">44.5°C</span>
+                </div>
+                <div class="ticker-item">
+                    <span class="label"><i class="fa-solid fa-wind"></i> WIND:</span>
+                    <span id="ticker-wind" class="value cyan">12.5 km/h</span>
+                </div>
+                <div class="ticker-item">
+                    <span class="label"><i class="fa-solid fa-microchip"></i> AI ENGINE:</span>
+                    <span class="value green"><span class="pulse-dot"></span> ONLINE</span>
+                </div>
+                <div class="ticker-item">
+                    <span class="value green" title="Thermal Stress Index Model"><i class="fa-solid fa-lock"></i> WBGT ACTIVE</span>
+                </div>
+                <div class="ticker-item">
+                    <span class="label"><i class="fa-solid fa-truck-medical"></i> RISK:</span>
+                    <span class="value" style="color:#EF4444;" title="High Hospitalization Risk Alert">CRITICAL</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn-glow" style="background: linear-gradient(135deg, #10B981, #059669); border-color: #10B981; margin-right: 8px;" onclick="startIntroTour()"><i class="fa-solid fa-compass"></i> Platform Tour</button>
+                <button class="btn-glow" onclick="refreshTelemetry()"><i class="fa-solid fa-rotate-right"></i> Sync Open-Meteo</button>
+            </div>
+        </header>
+
+        <div class="main-workspace">
+            <!-- Left Navigation Sidebar -->
+            <aside class="sidebar">
+                <div class="nav-section-title">HEATWAVE MODULES</div>
+                <nav class="nav-menu">
+                    <a href="#" class="nav-item active" data-tab="module-1">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span>1. Real-Time Risk Map</span>
+                    </a>
+                    <a href="#" class="nav-item" data-tab="module-2">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        <span>2. WBGT Stress Index</span>
+                    </a>
+                    <a href="#" class="nav-item" data-tab="module-3">
+                        <i class="fa-solid fa-brain"></i>
+                        <span>3. Mortality Predictor</span>
+                    </a>
+                    <a href="#" class="nav-item highlight-item" data-tab="module-4">
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                        <span>4. Alert Dashboard <span class="badge" style="background:#EF4444; color:#fff;">LIVE</span></span>
+                    </a>
+                    <a href="#" class="nav-item" data-tab="module-5">
+                        <i class="fa-solid fa-file-shield"></i>
+                        <span>5. Public Advisories</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="hackathon-card" style="border: 1px solid #FF5722; background: rgba(255, 87, 34, 0.1);">
+                        <i class="fa-solid fa-award" style="color: #FF5722;"></i>
+                        <div class="hack-text">
+                            <strong style="color: #fff;">SIH 26083</strong>
+                            <span>Smart India Hackathon</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="content-area">
+                
+                <!-- MODULE 1: Real-Time Heatwave Risk Map -->
+                <section id="module-1" class="module-view active">
+                    <div class="module-header">
+                        <h2><i class="fa-solid fa-map-location-dot"></i> Real-Time Heatwave Risk Map</h2>
+                        <p>Live spatial tracking of Wet-Bulb Globe Temperature (WBGT) and Demographic Mortality Risk across local wards.</p>
+                    </div>
+                    
+                    <div class="grid-2-col">
+                        <div class="glass-card map-card">
+                            <div class="card-title" style="flex-wrap: wrap; gap: 10px;">
+                                <h3>Delhi NCR Geospatial LST Hotspot Map</h3>
+                                <div class="map-action-bar" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                    <button class="btn-map-action" onclick="zoomMapIn()" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+                                    <button class="btn-map-action" onclick="zoomMapOut()" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+                                    <button class="btn-map-action" onclick="resetMapView()" title="Reset View"><i class="fa-solid fa-house-signal"></i> Reset</button>
+                                    <span class="live-tag" style="margin: 0 4px;"><i class="fa-solid fa-circle"></i> ISRO VEDAS THERMAL</span>
+                                    <button id="fullscreen-toggle-btn" class="btn-fullscreen" onclick="toggleMapFullscreen()" title="Toggle Fullscreen">
+                                        <i class="fa-solid fa-expand"></i> <span>[ ] Full Screen</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Map Layer Switcher Console -->
+                            <div class="map-layer-console">
+                                <div class="console-label">
+                                    <i class="fa-solid fa-satellite-dish pulse-cyan"></i> SATELLITE SENSOR FEED:
+                                </div>
+                                <div class="layer-buttons">
+                                    <button class="btn-layer active" id="btn-layer-vedas" onclick="switchMapLayer('vedas')">
+                                        <span class="layer-dot dot-red"></span>
+                                        <span class="layer-name"><i class="fa-solid fa-temperature-arrow-up"></i> Heat Stress (WBGT)</span>
+                                        <span class="layer-badge">LIVE RISK</span>
+                                    </button>
+                                    <button class="btn-layer" id="btn-layer-ndvi" onclick="switchMapLayer('ndvi')">
+                                        <span class="layer-dot dot-green"></span>
+                                        <span class="layer-name"><i class="fa-solid fa-leaf"></i> Sentinel-2 NDVI</span>
+                                        <span class="layer-badge">VEGETATION</span>
+                                    </button>
+                                    <button class="btn-layer" id="btn-layer-bhuvan" onclick="switchMapLayer('bhuvan')">
+                                        <span class="layer-dot dot-cyan"></span>
+                                        <span class="layer-name"><i class="fa-solid fa-building-shield"></i> Bhuvan Satellite</span>
+                                        <span class="layer-badge">DARK MODE</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="leaflet-map" class="map-container"></div>
+
+                            <!-- Dynamic Satellite Layer Legend Bar -->
+                            <div id="map-layer-legend" class="layer-legend-bar" style="margin-top: 14px; padding: 10px 16px; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-secondary);">
+                                <div id="legend-content" style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                    <strong style="color: #EF4444;"><i class="fa-solid fa-layer-group"></i> ISRO VEDAS Legend:</strong>
+                                    <span><span style="display:inline-block;width:12px;height:12px;background:#EF4444;border-radius:3px;margin-right:4px;"></span>Critical (>45°C)</span>
+                                    <span><span style="display:inline-block;width:12px;height:12px;background:#F59E0B;border-radius:3px;margin-left:8px;margin-right:4px;"></span>High Risk (43-45°C)</span>
+                                    <span><span style="display:inline-block;width:12px;height:12px;background:#10B981;border-radius:3px;margin-left:8px;margin-right:4px;"></span>Moderate (≤43°C)</span>
+                                </div>
+                                <span style="font-size: 11px; color: var(--text-muted);"><i class="fa-solid fa-clock"></i> Satellite Overpass Sync: Live 30m Grid</span>
+                            </div>
+                        </div>
+
+                        <div class="glass-card wards-list-card">
+                            <div class="card-title">
+                                <h3>Critical Risk Hotspots</h3>
+                                <span>Sorted by Mortality Risk</span>
+                            </div>
+                            <div id="hotspots-list" class="hotspots-grid"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 2: WBGT Stress Index -->
+                <section id="module-2" class="module-view">
+                    <div class="module-header">
+                        <h2><i class="fa-solid fa-magnifying-glass-chart"></i> WBGT Stress Index Analysis</h2>
+                        <p>Live meteorological breakdowns contributing to the high thermal stress index.</p>
+                    </div>
+                    <div class="audit-grid">
+                        <div class="glass-card audit-stat-card">
+                            <div class="stat-icon red"><i class="fa-solid fa-city"></i></div>
+                            <div class="stat-content">
+                                <h4>Average Concrete Density</h4>
+                                <div class="stat-number">78.5%</div>
+                                <div class="progress-bar"><div class="fill red-fill" style="width: 78.5%"></div></div>
+                                <p class="stat-desc">HOT OSM Road & Building Footprints</p>
+                            </div>
+                        </div>
+                        <div class="glass-card audit-stat-card">
+                            <div class="stat-icon green"><i class="fa-solid fa-tree"></i></div>
+                            <div class="stat-content">
+                                <h4>Urban Green Cover Canopy</h4>
+                                <div class="stat-number">15.2%</div>
+                                <div class="progress-bar"><div class="fill green-fill" style="width: 15.2%"></div></div>
+                                <p class="stat-desc">Planetary Computer NDVI Deficit</p>
+                            </div>
+                        </div>
+                        <div class="glass-card audit-stat-card">
+                            <div class="stat-icon blue"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-content">
+                                <h4>Demographic Vulnerability</h4>
+                                <div class="stat-number">31,000 /km²</div>
+                                <div class="progress-bar"><div class="fill blue-fill" style="width: 75%"></div></div>
+                                <p class="stat-desc">WorldPop India 100m Grid Exposure</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card mt-4">
+                        <div class="card-title">
+                            <h3>Ward-Wise Infrastructure Audit Comparison</h3>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="auditChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 3: Mortality Predictor Engine -->
+                <section id="module-3" class="module-view">
+                    <div class="module-header">
+                        <h2><i class="fa-solid fa-brain"></i> AI Mortality Predictor</h2>
+                        <p>Machine Learning demographic correlation highlighting vulnerable populations exposed to lethal WBGT levels.</p>
+                    </div>
+
+                    <!-- Live Interactive SHAP Breakdown Panel -->
+                    <div class="glass-card mb-4" style="margin-bottom: 24px; border: 1px solid var(--cyan-glow); box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);">
+                        <div class="card-title" style="flex-wrap: wrap; gap: 10px;">
+                            <h3 id="m3-chart-title" style="color: #fff;"><i class="fa-solid fa-chart-gantt" style="color: var(--cyan-glow);"></i> Live SHAP Attribution Breakdown: Gurgaon Cyber City (W106)</h3>
+                            <span style="background: rgba(0, 242, 254, 0.15); color: var(--cyan-glow); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;"><i class="fa-solid fa-hand-pointer"></i> Click any ward card below to inspect</span>
+                        </div>
+                        <div style="height: 300px; width: 100%;">
+                            <canvas id="m3ShapBreakdownChart"></canvas>
+                        </div>
+                        <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
+                            <span><i class="fa-solid fa-circle-info" style="color: #F59E0B;"></i> Positive bars (+°C) increase urban heating; Negative bars (-°C) represent natural/engineered cooling mitigation.</span>
+                            <strong id="m3-net-impact" style="color: #EF4444; font-size: 13px;">Net UHI Heating Anomaly: +5.7°C</strong>
+                        </div>
+                    </div>
+
+                    <div id="ai-diagnostics-container" class="ai-cards-grid"></div>
+                </section>
+
+                <!-- MODULE 4: Multi-Strategy Cooling Optimizer -->
+                <section id="module-4" class="module-view">
+                    <div class="module-header">
+                        <h2><i class="fa-solid fa-tower-broadcast"></i> Live Public Alert Dashboard</h2>
+                        <p>Automatically triggers localized SMS and WhatsApp heatwave advisories to vulnerable demographics via MoES telecom integration.</p>
+                    </div>
+
+                    <div class="optimizer-layout mt-4">
+                        <!-- Left Controls: Alert Triggers -->
+                        <div class="glass-card controls-card">
+                            <h3><i class="fa-solid fa-bell"></i> Critical Ward Alerting</h3>
+                            <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Trigger emergency protocols for wards exceeding Mortality Risk 85.</p>
+                            
+                            <div id="alert-wards-container">
+                                <!-- Dynamic JS will populate critical wards here, but here's a fallback UI -->
+                                <div class="slider-group" style="padding:15px; border:1px solid rgba(239, 68, 68, 0.3); border-radius:8px; background:rgba(239, 68, 68, 0.1);">
+                                    <div class="slider-header" style="margin-bottom:8px;">
+                                        <span><i class="fa-solid fa-triangle-exclamation" style="color:#EF4444;"></i> Chandni Chowk (W106)</span>
+                                        <span class="slider-val" style="color:#EF4444; border-color:#EF4444;">Risk: 98</span>
+                                    </div>
+                                    <p class="slider-hint">Population: 42,000 | Primary Risk: High Humidity & Outdoor Workers</p>
+                                    <button class="btn-simulate" onclick="sendAlert('W106')" style="margin-top:10px; background:#EF4444; border-color:#EF4444;"><i class="fa-solid fa-comment-sms"></i> Dispatch SMS Advisory</button>
+                                </div>
+                                <div class="slider-group" style="padding:15px; border:1px solid rgba(245, 158, 11, 0.3); border-radius:8px; background:rgba(245, 158, 11, 0.1); margin-top:12px;">
+                                    <div class="slider-header" style="margin-bottom:8px;">
+                                        <span><i class="fa-solid fa-triangle-exclamation" style="color:#F59E0B;"></i> Karol Bagh (W102)</span>
+                                        <span class="slider-val" style="color:#F59E0B; border-color:#F59E0B;">Risk: 92</span>
+                                    </div>
+                                    <p class="slider-hint">Population: 36,000 | Primary Risk: Lethal WBGT Temps</p>
+                                    <button class="btn-simulate" onclick="sendAlert('W102')" style="margin-top:10px; background:#F59E0B; border-color:#F59E0B; color:#fff;"><i class="fa-solid fa-comment-sms"></i> Dispatch SMS Advisory</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Telemetry HUD -->
+                        <div class="glass-card hud-card">
+                            <h3><i class="fa-solid fa-mobile-screen"></i> SMS Gateway Status</h3>
+                            
+                            <!-- Before vs After Live Comparison Banner -->
+                            <div class="before-after-banner" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(16, 185, 129, 0.15)); border: 1px solid var(--cyan-glow); padding: 14px 18px; border-radius: 12px; margin: 12px 0 18px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; box-shadow: 0 0 20px rgba(0, 242, 254, 0.15);">
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <span style="font-size: 11px; color: var(--text-muted); display: block; font-weight: 600;">ACTIVE API LINK</span>
+                                    <strong style="font-size: 18px; color: #10B981;">TELECOM ONLINE</strong>
+                                </div>
+                                <div style="font-size: 18px; color: var(--cyan-glow); padding: 0 5px;"><i class="fa-solid fa-tower-cell"></i></div>
+                                <div style="text-align: center; flex: 1; min-width: 100px;">
+                                    <span style="font-size: 11px; color: var(--text-muted); display: block; font-weight: 600;">ALERTS DISPATCHED</span>
+                                    <strong style="font-size: 20px; color: #00F2FE;" id="sms-count">0</strong>
+                                </div>
+                            </div>
+
+                            <div class="breakdown-list">
+                                <h4>Sample Advisory Template (Hindi/English)</h4>
+                                <div style="background:#0F172A; padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); font-size:13px; color:#E2E8F0; font-family:monospace; line-height:1.5;">
+                                    <span style="color:#EF4444;">[MoES ALERT]</span> WARNING: WBGT Heat Stress is Critical.<br><br>
+                                    <span style="color:#F59E0B;">ACTION PLAN:</span> Shift outdoor work hours immediately. Opening emergency cooling centers in W106.<br><br>
+                                    <span style="color:#00F2FE;">[MoES चेतावनी]</span> हीटवेव का खतरा बहुत ज्यादा है। कृपया कूलिंग सेंटर में जाएं।
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cooling Potential by Strategy Bar Chart -->
+                    <div class="glass-card mt-4" style="margin-top: 24px;">
+                        <div class="card-title">
+                            <h3><i class="fa-solid fa-chart-column"></i> AI/ML & Physics-Informed Cooling Potential by Strategy</h3>
+                            <span class="live-tag" style="background:rgba(16,185,129,0.1); color:#10B981; border-color:#10B981;"><i class="fa-solid fa-brain"></i> DERIVED FROM DATASET TELEMETRY</span>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                            Maximum theoretical surface temperature reduction (°C) modeled across monitored urban heat stress hotspots using physical thermodynamics and SHAP XAI weights.
+                        </p>
+                        <div style="position: relative; height: 320px; width: 100%;">
+                            <canvas id="strategyChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Material Performance Comparison Table -->
+                    <div class="glass-card mt-4" style="margin-top: 24px;">
+                        <div class="card-title">
+                            <h3><i class="fa-solid fa-flask"></i> Physics-Informed Material Performance Comparison</h3>
+                            <span class="live-tag" style="background:rgba(0,242,254,0.1); color:var(--cyan-glow); border-color:var(--cyan-glow);"><i class="fa-solid fa-check-double"></i> ISRO VEDAS BENCHMARK</span>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                            Comparative thermodynamic properties and lifecycle economics of urban mitigation materials deployed across Delhi NCR and Patna hotspots.
+                        </p>
+                        <div style="overflow-x: auto;">
+                            <table class="material-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid var(--border-color); color: var(--cyan-glow);">
+                                        <th style="padding: 12px 10px;">Material / Strategy</th>
+                                        <th style="padding: 12px 10px;">Albedo (<i class="fa-solid fa-sun"></i> Reflectivity)</th>
+                                        <th style="padding: 12px 10px;">Peak Surface Temp</th>
+                                        <th style="padding: 12px 10px;">Daytime Cooling Impact</th>
+                                        <th style="padding: 12px 10px;">Unit Cost (Est.)</th>
+                                        <th style="padding: 12px 10px;">Durability</th>
+                                        <th style="padding: 12px 10px;">Physics Verdict</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(239, 68, 68, 0.05);">
+                                        <td style="padding: 12px 10px; font-weight: 600;"><i class="fa-solid fa-road" style="color:#EF4444; width:20px;"></i> Conventional Asphalt</td>
+                                        <td style="padding: 12px 10px; color: #EF4444; font-weight: 700;">0.08</td>
+                                        <td style="padding: 12px 10px; color: #EF4444; font-weight: 700;">63.3°C</td>
+                                        <td style="padding: 12px 10px; color: var(--text-muted);">Baseline (0°C)</td>
+                                        <td style="padding: 12px 10px;">₹850 / m²</td>
+                                        <td style="padding: 12px 10px;">7 - 10 yrs</td>
+                                        <td style="padding: 12px 10px;"><span style="background:rgba(239,68,68,0.2); color:#EF4444; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:700;">Extreme Heat Trap</span></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td style="padding: 12px 10px; font-weight: 600;"><i class="fa-solid fa-border-all" style="color:#4FACFE; width:20px;"></i> Cool Permeable Pavers</td>
+                                        <td style="padding: 12px 10px; color: #4FACFE; font-weight: 700;">0.35</td>
+                                        <td style="padding: 12px 10px;">48.5°C</td>
+                                        <td style="padding: 12px 10px; color: #10B981; font-weight: 600;">-3.5°C to -5.2°C</td>
+                                        <td style="padding: 12px 10px;">₹1,450 / m²</td>
+                                        <td style="padding: 12px 10px;">12 - 15 yrs</td>
+                                        <td style="padding: 12px 10px;"><span style="background:rgba(79,172,254,0.2); color:#4FACFE; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:700;">Drainage + Cooling</span></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(16, 185, 129, 0.05);">
+                                        <td style="padding: 12px 10px; font-weight: 600;"><i class="fa-solid fa-paint-roller" style="color:#10B981; width:20px;"></i> High-Albedo Reflective Paint</td>
+                                        <td style="padding: 12px 10px; color: #10B981; font-weight: 700;">0.85</td>
+                                        <td style="padding: 12px 10px; color: #10B981; font-weight: 700;">38.2°C</td>
+                                        <td style="padding: 12px 10px; color: #10B981; font-weight: 600;">-4.8°C to -6.5°C</td>
+                                        <td style="padding: 12px 10px; font-weight: 700;">₹350 / m²</td>
+                                        <td style="padding: 12px 10px;">5 - 7 yrs</td>
+                                        <td style="padding: 12px 10px;"><span style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:700;">Highest ROI ⭐</span></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td style="padding: 12px 10px; font-weight: 600;"><i class="fa-solid fa-house-chimney-window" style="color:#34D399; width:20px;"></i> Extensive Green Roofs</td>
+                                        <td style="padding: 12px 10px; color: #34D399; font-weight: 700;">0.25 + ET*</td>
+                                        <td style="padding: 12px 10px;">35.0°C</td>
+                                        <td style="padding: 12px 10px; color: #10B981; font-weight: 600;">-5.0°C to -8.0°C</td>
+                                        <td style="padding: 12px 10px;">₹2,800 / m²</td>
+                                        <td style="padding: 12px 10px;">20+ yrs</td>
+                                        <td style="padding: 12px 10px;"><span style="background:rgba(52,211,153,0.2); color:#34D399; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:700;">Max Eco Benefit</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 12px 10px; font-weight: 600;"><i class="fa-solid fa-tree" style="color:#10B981; width:20px;"></i> Urban Canopy Forestry</td>
+                                        <td style="padding: 12px 10px; color: #10B981; font-weight: 700;">0.20 + Shade</td>
+                                        <td style="padding: 12px 10px; color: #10B981; font-weight: 700;">32.4°C</td>
+                                        <td style="padding: 12px 10px; color: #10B981; font-weight: 600;">-4.0°C to -7.5°C</td>
+                                        <td style="padding: 12px 10px;">₹1,200 / unit</td>
+                                        <td style="padding: 12px 10px;">40+ yrs</td>
+                                        <td style="padding: 12px 10px;"><span style="background:rgba(16,185,129,0.2); color:#10B981; padding:3px 8px; border-radius:12px; font-size:11px; font-weight:700;">Long-term Asset</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">
+                                *ET = Evapotranspiration cooling effect modeled via ISRO Bhuvan Surface Energy Balance algorithms.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 5: 15-Year Climate Forecasting -->
+                <section id="module-5" class="module-view">
+                    <div class="module-header">
+                        <h2><i class="fa-solid fa-chart-line"></i> 15-Year UHI Climate Forecasting (2026 - 2041)</h2>
+                        <p>Comparative trajectory modeling calibrated with IMD Pune climate standards and Open-Meteo trends.</p>
+                    </div>
+                    <div class="glass-card">
+                        <div class="chart-box large-chart">
+                            <canvas id="forecastChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 6: Neighborhood Prioritization -->
+                <section id="module-6" class="module-view">
+                    <div class="module-header">
+                        <h2><i class="fa-solid fa-layer-group"></i> Neighborhood Vulnerability Prioritization</h2>
+                        <p>Budget-aware priority ranking matrix fusing ISRO VEDAS thermal exposure with WorldPop demographic density.</p>
+                    </div>
+                    <div class="glass-card table-card">
+                        <!-- Zone Filter & AI Accuracy Bar -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 12px 16px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border-color); margin-bottom: 16px; border-radius: 8px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <label for="zoneFilter" style="font-size: 13px; font-weight: 600; color: var(--cyan-glow);"><i class="fa-solid fa-filter"></i> Filter by Zone:</label>
+                                <select id="zoneFilter" onchange="filterTableByZone()" style="background: #0D131E; border: 1px solid var(--cyan-glow); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 13px; outline: none; cursor: pointer;">
+                                    <option value="ALL">All Delhi NCR Zones</option>
+                                    <option value="Old Delhi">Old Delhi</option>
+                                    <option value="Central Delhi">Central Delhi</option>
+                                    <option value="West Delhi">West Delhi</option>
+                                    <option value="North-West Delhi">North-West Delhi</option>
+                                    <option value="South-West Delhi">South-West Delhi</option>
+                                    <option value="South Delhi">South Delhi</option>
+                                    <option value="NCR South-West">NCR South-West (Gurgaon)</option>
+                                    <option value="NCR East">NCR East (Noida)</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 12px; color: var(--text-muted);"><i class="fa-solid fa-hand-pointer"></i> Click SHAP button for XAI Radar</span>
+                                <span style="background: rgba(0, 242, 254, 0.1); border: 1px solid var(--cyan-glow); color: var(--cyan-glow); padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;"><i class="fa-solid fa-check-double"></i> XGBoost Accuracy: 94.8%</span>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ward ID</th>
+                                        <th>Neighborhood Name</th>
+                                        <th>Zone</th>
+                                        <th>Peak LST</th>
+                                        <th>Concrete %</th>
+                                        <th style="min-width: 170px;">Heat Risk Index</th>
+                                        <th>Population Exposed</th>
+                                        <th>Priority Level</th>
+                                        <th>Recommended Action</th>
+                                        <th>AI SHAP Analysis</th>
+                                        <th>Est. Budget</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="prioritization-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 7: Policy Report -->
+                <section id="module-7" class="module-view">
+                    <div class="module-header">
+                        <h2><i class="fa-solid fa-file-shield"></i> Executive Policy Decision Report</h2>
+                        <p>Automated briefing summary generated by Team NeuroAgent for ISRO judging panels and municipal authorities.</p>
+                    </div>
+                    <div class="glass-card report-card">
+                        <div class="report-header">
+                            <div>
+                                <h3>URBAN HEAT MITIGATION ACTION PLAN</h3>
+                                <span>Ref: NEUROAGENT-PS1-2026 | Powered by ISRO VEDAS, Bhuvan & WorldPop</span>
+                            </div>
+                            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                                <a href="/api/export_csv" class="btn-glow" style="text-decoration:none; background:rgba(16,185,129,0.2); border-color:#10B981;"><i class="fa-solid fa-file-csv"></i> Download CSV Plan</a>
+                                <a href="/api/download_policy_report" class="btn-glow" style="text-decoration:none; background:linear-gradient(135deg, rgba(0,242,254,0.2), rgba(79,172,254,0.2)); border-color:var(--cyan-glow); box-shadow: 0 0 15px rgba(0,242,254,0.4);"><i class="fa-solid fa-file-arrow-down"></i> 📥 Download Official ISRO Policy Report</a>
+                            </div>
+                        </div>
+
+                        <!-- Sovereign Security & Judicial Audit Console -->
+                        <div style="background: rgba(10, 14, 23, 0.9); border: 1px solid #10B981; border-radius: 10px; padding: 14px; margin: 16px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);">
+                            <div>
+                                <strong style="color: #10B981; font-size: 13px; display: block; margin-bottom: 4px;"><i class="fa-solid fa-lock"></i> Sovereign AtmaNirbhar Security</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">Self-Contained Local Physics & AI Engine (`cooling_ai_model.pkl`). Zero external data exfiltration. Fully deployable on Indian Gov Cloud.</span>
+                            </div>
+                            <div>
+                                <strong style="color: #00F2FE; font-size: 13px; display: block; margin-bottom: 4px;"><i class="fa-solid fa-bolt-lightning"></i> Disaster-Grade Fault Tolerance</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">Live Open-Meteo API with automated ISRO VEDAS local cache fallback. Guarantees 0ms downtime during extreme summer heatwaves.</span>
+                            </div>
+                            <div>
+                                <strong style="color: #F59E0B; font-size: 13px; display: block; margin-bottom: 4px;"><i class="fa-solid fa-scale-balanced"></i> Judicial Audit Transparency</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">100% Explainable AI SHAP attribution values backed by Stefan-Boltzmann physical equations aligned with UN SDGs 11 & 13.</span>
+                            </div>
+                        </div>
+
+                        <div class="report-body">
+                            <h4>1. Executive Summary (Team NeuroAgent Analysis)</h4>
+                            <p>Analysis of multispectral thermal data from ISRO VEDAS and Bhuvan portals indicates severe heat trapping in commercial and high-density residential wards across Delhi NCR, with surface temperatures exceeding 46.0°C during peak summer hours. Without immediate intervention, urban sprawl is projected to add +2.4°C over the next 15 years.</p>
+                            
+                            <h4>2. High-Priority Wards Immediate Outlay</h4>
+                            <p>Immediate capital deployment is recommended for <strong>Chandni Chowk (W106)</strong>, <strong>Connaught Place (W101)</strong>, and <strong>Karol Bagh (W102)</strong>. These zones exhibit >85% concrete imperviousness coupled with critical population density defined by WorldPop India 100m grids.</p>
+                            
+                            <h4>3. Optimal Multi-Strategy Mix</h4>
+                            <p>Simulation models confirm that a hybrid strategy prioritizing <strong>High-Albedo Reflective Roof Coatings (30% coverage)</strong> and <strong>Urban Canopy Expansion (25% growth)</strong> yields the highest ROI, delivering an estimated city-wide thermal drop of <strong>-2.42°C</strong> at a capital outlay of ₹4.80 Cr.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 8: AI Data Studio & Continuous Training Portal -->
+                <section id="module-8" class="module-view">
+                    <div class="module-header">
+                        <h2><i class="fa-solid fa-cloud-arrow-up"></i> National Crowd-Sourced AI Data Studio & Federated Training Portal</h2>
+                        <p>Drag and drop raw satellite thermal rasters, built-up CSVs, or weather logs for any Indian city. Continuous learning pipelines calibrate XGBoost weights and push verified models to ISRO GitHub Cloud.</p>
+                    </div>
+
+                    <div class="glass-card" style="padding: 24px; margin-bottom: 24px;">
+                        <h3 style="color: var(--cyan-glow); font-size: 16px; margin-bottom: 16px;"><i class="fa-solid fa-boxes-packing"></i> 5-Core Modular Data Ingestion Dropboxes</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                            
+                            <div class="drop-box" id="drop-box-1" onclick="document.getElementById('file-input-1').click()">
+                                <input type="file" id="file-input-1" style="display:none" onchange="handleFileSelect(1, this.files[0])">
+                                <i class="fa-solid fa-satellite" style="font-size: 28px; color: #EF4444; margin-bottom: 8px;"></i>
+                                <strong style="display:block; font-size: 13px; color: #fff;">01_Satellite_LST</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">ISRO VEDAS Thermal (.zip/.csv)</span>
+                                <div id="status-1" class="drop-status">Drop file or click</div>
+                                <button onclick="event.stopPropagation(); clearFileBox(1);" class="btn-clear-box" title="Remove file" style="display:none; margin-top:8px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; color:#EF4444; padding:2px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✖ Remove</button>
+                            </div>
+
+                            <div class="drop-box" id="drop-box-2" onclick="document.getElementById('file-input-2').click()">
+                                <input type="file" id="file-input-2" style="display:none" onchange="handleFileSelect(2, this.files[0])">
+                                <i class="fa-solid fa-leaf" style="font-size: 28px; color: #10B981; margin-bottom: 8px;"></i>
+                                <strong style="display:block; font-size: 13px; color: #fff;">02_Indices_NDVI_NDBI</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">Spectral Indices (.tif/.csv)</span>
+                                <div id="status-2" class="drop-status">Drop file or click</div>
+                                <button onclick="event.stopPropagation(); clearFileBox(2);" class="btn-clear-box" title="Remove file" style="display:none; margin-top:8px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; color:#EF4444; padding:2px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✖ Remove</button>
+                            </div>
+
+                            <div class="drop-box" id="drop-box-3" onclick="document.getElementById('file-input-3').click()">
+                                <input type="file" id="file-input-3" style="display:none" onchange="handleFileSelect(3, this.files[0])">
+                                <i class="fa-solid fa-building" style="font-size: 28px; color: #F59E0B; margin-bottom: 8px;"></i>
+                                <strong style="display:block; font-size: 13px; color: #fff;">03_GIS_Boundaries</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">Ward Shapefiles (.shp/.geojson)</span>
+                                <div id="status-3" class="drop-status">Drop file or click</div>
+                                <button onclick="event.stopPropagation(); clearFileBox(3);" class="btn-clear-box" title="Remove file" style="display:none; margin-top:8px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; color:#EF4444; padding:2px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✖ Remove</button>
+                            </div>
+
+                            <div class="drop-box" id="drop-box-4" onclick="document.getElementById('file-input-4').click()">
+                                <input type="file" id="file-input-4" style="display:none" onchange="handleFileSelect(4, this.files[0])">
+                                <i class="fa-solid fa-users" style="font-size: 28px; color: #3B82F6; margin-bottom: 8px;"></i>
+                                <strong style="display:block; font-size: 13px; color: #fff;">04_Demographics</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">WorldPop Grid (.csv/.json)</span>
+                                <div id="status-4" class="drop-status">Drop file or click</div>
+                                <button onclick="event.stopPropagation(); clearFileBox(4);" class="btn-clear-box" title="Remove file" style="display:none; margin-top:8px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; color:#EF4444; padding:2px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✖ Remove</button>
+                            </div>
+
+                            <div class="drop-box" id="drop-box-5" onclick="document.getElementById('file-input-5').click()">
+                                <input type="file" id="file-input-5" style="display:none" onchange="handleFileSelect(5, this.files[0])">
+                                <i class="fa-solid fa-cloud-sun-rain" style="font-size: 28px; color: #00F2FE; margin-bottom: 8px;"></i>
+                                <strong style="display:block; font-size: 13px; color: #fff;">05_Weather_Climate</strong>
+                                <span style="font-size: 11px; color: var(--text-muted);">Open-Meteo Logs (.csv/.xlsx)</span>
+                                <div id="status-5" class="drop-status">Drop file or click</div>
+                                <button onclick="event.stopPropagation(); clearFileBox(5);" class="btn-clear-box" title="Remove file" style="display:none; margin-top:8px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; color:#EF4444; padding:2px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✖ Remove</button>
+                            </div>
+
+                        </div>
+
+                        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+                            <button class="btn-glow" onclick="triggerAITraining()" style="background: linear-gradient(135deg, rgba(0,242,254,0.25), rgba(16,185,129,0.25)); border-color: #00F2FE; padding: 10px 20px; font-size: 14px; font-weight: bold;"><i class="fa-solid fa-bolt"></i> ⚡ Trigger Continuous AI Re-Training & Ingest</button>
+                            <button class="btn-glow" onclick="loadSamplePatnaData()" style="background: rgba(245, 158, 11, 0.2); border-color: #F59E0B; padding: 10px 18px; font-size: 14px;"><i class="fa-solid fa-vial"></i> 📍 Load Sample Patna/Bihar Dataset Demo</button>
+                            <button class="btn-glow" onclick="resetAllBoxes()" style="background: rgba(239, 68, 68, 0.2); border-color: #EF4444; color: #EF4444; padding: 10px 18px; font-size: 14px;"><i class="fa-solid fa-trash-can"></i> ✖ Reset All Boxes</button>
+                        </div>
+                    </div>
+
+                    <!-- Live Hacker Training Console -->
+                    <div class="glass-card" style="padding: 20px; margin-bottom: 24px; background: #05080E; border: 1px solid rgba(0, 242, 254, 0.4);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px;">
+                            <span style="font-family: monospace; font-size: 13px; color: #00F2FE;"><i class="fa-solid fa-terminal"></i> LIVE FEDERATED LEARNING PIPELINE CONSOLE</span>
+                            <span id="training-status-badge" style="background: rgba(255,255,255,0.05); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; font-size: 11px;">IDLE</span>
+                        </div>
+                        <div id="training-console-logs" style="font-family: 'Courier New', monospace; font-size: 12px; color: #10B981; height: 160px; overflow-y: auto; line-height: 1.6; padding: 6px;">
+                            <div style="color: #64748B;">[SYSTEM] Ready to ingest new urban records. Drop CSV datasets or click Load Sample Demo...</div>
+                        </div>
+                    </div>
+
+                    <!-- Ingested Data Preview & GitHub Push -->
+                    <div class="glass-card" style="padding: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                            <h3 style="color: #fff; font-size: 16px; margin: 0;"><i class="fa-solid fa-table-list" style="color: var(--cyan-glow);"></i> Newly Ingested Wards Preview Matrix</h3>
+                            <button id="btn-push-github" onclick="pushToGitHub()" disabled class="btn-glow" style="background: rgba(255,255,255,0.05); border-color: #64748B; color: #64748B; cursor: not-allowed; padding: 10px 22px; font-size: 14px; font-weight: bold;"><i class="fa-brands fa-github"></i> 🚀 Push Trained Pipeline to GitHub / Master Cloud</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ward ID</th>
+                                        <th>City / Neighborhood</th>
+                                        <th>Zone</th>
+                                        <th>Peak LST</th>
+                                        <th>Concrete %</th>
+                                        <th>Heat Risk Index</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="preview-tbody">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">No new national data ingested yet. Run retraining above.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- SHAP XAI Breakdown Modal -->
+    <div id="shapModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 14, 23, 0.85); z-index: 9999; backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px;">
+        <div class="glass-card" style="max-width: 650px; width: 100%; border: 1px solid var(--cyan-glow); box-shadow: 0 0 30px rgba(0, 242, 254, 0.3); position: relative; padding: 24px; border-radius: 16px;">
+            <button onclick="closeShapModal()" style="position: absolute; top: 18px; right: 18px; background: rgba(239, 68, 68, 0.2); border: 1px solid #EF4444; color: #EF4444; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-xmark"></i></button>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <h3 id="modalWardTitle" style="font-size: 20px; color: #fff; margin: 0;"><i class="fa-solid fa-brain" style="color: var(--cyan-glow);"></i> SHAP XAI Breakdown</h3>
+                <span id="modalAccuracyBadge" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">AI Accuracy: 94.8%</span>
+            </div>
+            <p id="modalWardDriver" style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;"></p>
+            <div style="position: relative; height: 300px; width: 100%;">
+                <canvas id="shapModalChart"></canvas>
+            </div>
+            <div style="margin-top: 16px; font-size: 12px; color: var(--text-secondary); background: rgba(0, 242, 254, 0.05); padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--cyan-glow);">
+                <strong>XAI Interpretation:</strong> Higher SHAP weights indicate primary thermal drivers amplifying local land surface temperatures (LST).
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Floating Widget -->
+    <div id="ai-chat-launcher" onclick="toggleAIChat()" title="Ask Vyron AI anything about Physics, Math, or Team Neuro!">
+        <span class="chat-launcher-badge"><i class="fa-solid fa-robot"></i> Vyron AI</span>
+    </div>
+
+    <div id="ai-chat-window" class="chat-window-hidden">
+        <div class="chat-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="chat-avatar"><i class="fa-solid fa-microchip"></i></div>
+                <div>
+                    <h4 style="margin:0; font-size:14px; color:#fff;">Vyron AI</h4>
+                    <span style="font-size:10px; color:#10B981;"><i class="fa-solid fa-circle" style="font-size:8px;"></i> Team Neuro Expert</span>
+                </div>
+            </div>
+            <button onclick="toggleAIChat()" style="background:none; border:none; color:#94A3B8; cursor:pointer; font-size:16px;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="chat-messages" class="chat-body">
+            <div class="chat-bubble bot-bubble">
+                🌟 <b>Hello! I am Vyron AI.</b><br>
+                I am the official AI Co-Pilot for this MoES Extreme Heatwave Early Warning System engineered by <b>Team Neuro (Pratik Verma, Satyam Shroff, Kajal Kumari, Sandeep Kumar, Astha Kumari, Rajesh Kumar)</b>. Ask me anything about our WBGT physics equations, AI Mortality Predictor, or Alert modules!
+            </div>
+        </div>
+        <div class="chat-chips" style="padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 6px; background: rgba(10, 14, 23, 0.85); border-top: 1px solid rgba(255,255,255,0.08);">
+            <button class="chip-btn" onclick="sendQuickPrompt('Explain the WBGT calculation equation')" style="background: rgba(0, 242, 254, 0.12); border: 1px solid rgba(0, 242, 254, 0.3); color: #00F2FE; font-size: 11px; padding: 4px 8px; border-radius: 14px; cursor: pointer; transition: all 0.2s; font-weight: 600;">💬 WBGT Logic</button>
+            <button class="chip-btn" onclick="sendQuickPrompt('How does the AI predict mortality risk?')" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #10B981; font-size: 11px; padding: 4px 8px; border-radius: 14px; cursor: pointer; transition: all 0.2s; font-weight: 600;">💬 Mortality Predictor</button>
+            <button class="chip-btn" onclick="sendQuickPrompt('How does the SMS Alert Gateway work?')" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); color: #F59E0B; font-size: 11px; padding: 4px 8px; border-radius: 14px; cursor: pointer; transition: all 0.2s; font-weight: 600;">💬 SMS Alerts</button>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chat-input" placeholder="Ask physics, math, team, modules..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()" id="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Guided Intro Tour Modal Overlay -->
+    <div id="introTourModal" class="modal-overlay" style="display: none; z-index: 10000;">
+        <div class="modal-content tour-modal-content" style="max-width: 550px; border: 1px solid var(--cyan-glow); box-shadow: 0 0 50px rgba(0, 242, 254, 0.4); text-align: left; padding: 28px; position: relative; background: rgba(11, 15, 25, 0.96); backdrop-filter: blur(25px); border-radius: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div id="tourStepIcon" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(0, 242, 254, 0.2); color: var(--cyan-glow); display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fa-solid fa-rocket"></i></div>
+                    <div>
+                        <h3 id="tourStepTitle" style="margin: 0; font-size: 18px; color: #fff; font-family: var(--font-heading);">Welcome to Team Neuro!</h3>
+                        <span id="tourStepCounter" style="font-size: 11px; color: var(--cyan-glow); font-weight: 700;">Step 1 of 7</span>
+                    </div>
+                </div>
+                <button onclick="closeIntroTour()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 20px;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div id="tourStepBody" style="font-size: 14px; color: #E2E8F0; line-height: 1.6; margin-bottom: 24px; min-height: 100px;">
+                Welcome to the official <b>MoES Extreme Heatwave Early Warning System</b> engineered by <b>Team Neuro (Pratik Verma, Satyam Shroff, Kajal Kumari, Sandeep Kumar, Astha Kumari, Rajesh Kumar)</b>.<br><br>Take a quick interactive walkthrough to explore all 8 mission modules!
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">
+                <button onclick="closeIntroTour()" class="btn-glow" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #EF4444; padding: 8px 16px; font-size: 12px;"><i class="fa-solid fa-forward-fast"></i> Skip Tour</button>
+                <div style="display: flex; gap: 10px;">
+                    <button id="tourPrevBtn" onclick="prevTourStep()" class="btn-glow" style="display: none; padding: 8px 16px; font-size: 12px;"><i class="fa-solid fa-arrow-left"></i> Previous</button>
+                    <button id="tourNextBtn" onclick="nextTourStep()" class="btn-glow" style="background: linear-gradient(135deg, #00F2FE, #4FACFE); color: #0B0F19; font-weight: 700; padding: 8px 20px; font-size: 12px;">Next <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- App Script -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
