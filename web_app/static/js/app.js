@@ -145,15 +145,15 @@ function switchMapLayer(layerName) {
     // Switch base tile layer
     if (mapInstance && baseTileLayer) {
         mapInstance.removeLayer(baseTileLayer);
-        let tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-        let attr = '&copy; OpenStreetMap & ISRO VEDAS | Team NeuroAgent';
+        let tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+        let attr = '&copy; Esri & ISRO VEDAS | Team NeuroAgent';
         
         if (layerName === 'bhuvan') {
             tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
             attr = '&copy; Esri & ISRO Bhuvan High-Res Satellite | Team NeuroAgent';
         } else if (layerName === 'ndvi') {
-            tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';
-            attr = '&copy; Sentinel-2 Copernicus & OpenStreetMap | Team NeuroAgent';
+            tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+            attr = '&copy; Esri & OpenStreetMap | Team NeuroAgent';
         }
         
         baseTileLayer = L.tileLayer(tileUrl, {
@@ -219,9 +219,8 @@ function initMap(wards) {
         const delhiCoords = [28.6139, 77.2090];
         mapInstance = L.map("leaflet-map", { zoomControl: false }).setView(delhiCoords, 11);
 
-        baseTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap & ISRO VEDAS | Team NeuroAgent',
-            subdomains: 'abcd',
+        baseTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '&copy; Esri & ISRO VEDAS | Team NeuroAgent',
             maxZoom: 19
         }).addTo(mapInstance);
     }
