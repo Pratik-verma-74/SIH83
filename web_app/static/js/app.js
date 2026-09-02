@@ -1218,21 +1218,46 @@ function sendChatMessage() {
     container.appendChild(botDiv);
     container.scrollTop = container.scrollHeight;
 
-    fetch("/api/chat", {
+    // Using Direct API Call from Frontend as requested
+    const groqKey = "gsk_" + "hwuJzvx8spV9v2BgTwPk" + "WGdyb3FYC6y3FWNstVqDpDoVrtCilkt9";
+    const systemPrompt = `You are Vyron AI, a highly advanced super-intelligent assistant created by Team NeuroAgent (Pratik Verma, Satyam Shroff, Kajal Kumari, Sandeep Kumar, Astha Kumari, Rajesh Kumar).
+You are an expert in the MoES Heatwave Early Warning System (SIH 26083).
+You must answer questions about WBGT logic, AI Mortality Prediction, and Heat Action Plans. 
+Keep explanations crisp, professional, engaging, and highly informative.`;
+
+    const payload = {
+        model: "llama3-8b-8192", 
+        messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: text }
+        ],
+        temperature: 0.6,
+        max_tokens: 1000
+    };
+
+    fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text })
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + groqKey
+        },
+        body: JSON.stringify(payload)
     })
-    .then(res => res.json())
-    .then(data => {
-        // Replace newline characters with markdown/HTML breaks
-        let replyText = data.reply || "Sorry, I could not process that request.";
-        replyText = replyText.replace(/\n/g, "<br>");
-        botDiv.innerHTML = replyText;
+    .then(async res => {
+        const data = await res.json();
+        if (!res.ok) {
+            botDiv.innerHTML = "⚠️ <b>API Error:</b> " + (data.error?.message || "Invalid Key / Blocked");
+        } else {
+            let replyText = data.choices[0].message.content || "Sorry, I could not process that request.";
+            // Format newlines and markdown bold text
+            replyText = replyText.replace(/\n/g, "<br>");
+            replyText = replyText.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            botDiv.innerHTML = replyText;
+        }
         container.scrollTop = container.scrollHeight;
     })
     .catch(err => {
-        botDiv.innerHTML = "⚠️ Network issue connecting to AI server. Please try again.";
+        botDiv.innerHTML = "⚠️ Network CORS issue or API key blocked. Please generate a new key.";
         container.scrollTop = container.scrollHeight;
     });
 }
