@@ -241,7 +241,8 @@ def send_alert():
     
     # Fast2SMS Integration (Quick SMS Route 'q')
     api_key = "LMmJ2f4FVlcPxasz0rX673yOWo1j5tvRQ9KqIhCn8kDUpSdBZudEOwzF0ijebABqorYfTJRHZIm4uvks"
-    target_number = "7463053829" and "9199583628" and "7631192353" # TODO: 
+    # Fast2SMS requires multiple numbers to be comma-separated
+    target_number = "7463053829,9199583628,7631192353,7667281154,9334259647" 
     message = f"[MoES ALERT] Critical Heat Stress (WBGT) in {ward_id}. Initiate Cooling Centers immediately."
     
     url = "https://www.fast2sms.com/dev/bulkV2"
