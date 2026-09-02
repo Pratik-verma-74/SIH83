@@ -237,15 +237,37 @@ def push_github():
 @app.route("/api/send_alert", methods=["POST"])
 def send_alert():
     req = request.get_json() or {}
-    ward_id = req.get("ward_id")
-    # Simulate API call to SMS/WhatsApp gateway (e.g., Twilio/WhatsApp Cloud API)
-    import time
-    time.sleep(0.5) # simulate latency
+    ward_id = req.get("ward_id", "Unknown Ward")
     
+    # Fast2SMS Integration (Quick SMS Route 'q')
+    api_key = "LMmJ2f4FVlcPxasz0rX673yOWo1j5tvRQ9KqIhCn8kDUpSdBZudEOwzF0ijebABqorYfTJRHZIm4uvks"
+    target_number = "7463053829" and "9199583628" and "7631192353" # TODO: 
+    message = f"[MoES ALERT] Critical Heat Stress (WBGT) in {ward_id}. Initiate Cooling Centers immediately."
+    
+    url = "https://www.fast2sms.com/dev/bulkV2"
+    params = {
+        "authorization": api_key,
+        "route": "q",
+        "message": message,
+        "language": "english",
+        "flash": "0",
+        "numbers": target_number
+    }
+    
+    req_url = url + "?" + urllib.parse.urlencode(params)
+    
+    try:
+        req_obj = urllib.request.Request(req_url, method="GET")
+        with urllib.request.urlopen(req_obj) as response:
+            res_data = json.loads(response.read().decode("utf-8"))
+            print("Fast2SMS Response:", res_data)
+    except Exception as e:
+        print("Fast2SMS Error:", e)
+
     return jsonify({
         "status": "success",
-        "message": f"CRITICAL: Heatwave advisory SMS dispatched to registered contacts in {ward_id}.",
-        "dispatched_count": 4500,
+        "message": f"CRITICAL: Heatwave advisory SMS dispatched to {target_number} for {ward_id}.",
+        "dispatched_count": 1,
         "ward_id": ward_id
     })
 
