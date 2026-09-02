@@ -242,7 +242,7 @@ def send_alert():
     # Fast2SMS Integration (Quick SMS Route 'q')
     api_key = "LMmJ2f4FVlcPxasz0rX673yOWo1j5tvRQ9KqIhCn8kDUpSdBZudEOwzF0ijebABqorYfTJRHZIm4uvks"
     # Fast2SMS requires multiple numbers to be comma-separated
-    target_number = "7463053829,9199583628,7631192353,7667281154,9334259647" 
+    target_number = "7463053829" 
     message = f"[MoES ALERT] Critical Heat Stress (WBGT) in {ward_id}. Initiate Cooling Centers immediately."
     
     url = "https://www.fast2sms.com/dev/bulkV2"
@@ -277,6 +277,18 @@ def send_alert():
                     "message": f"Fast2SMS API Failed: {res_data.get('message', 'Unknown Error')}"
                 }), 400
 
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode("utf-8")
+        print("Fast2SMS HTTP Error:", error_body)
+        try:
+            err_json = json.loads(error_body)
+            msg = err_json.get("message", error_body)
+        except:
+            msg = error_body
+        return jsonify({
+            "status": "error",
+            "message": f"Fast2SMS Rejected: {msg}"
+        }), 400
     except Exception as e:
         print("Fast2SMS Error:", e)
         return jsonify({
