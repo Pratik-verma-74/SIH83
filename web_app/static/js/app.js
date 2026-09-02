@@ -1324,7 +1324,7 @@ function startIntroTour() {
 function closeIntroTour() {
     const modal = document.getElementById("introTourModal");
     if (modal) modal.style.display = "none";
-    localStorage.setItem("biharToIsroTourDone", "true");
+    localStorage.setItem("biharToSihTourDone", "true");
 }
 
 function renderTourStep() {
@@ -1372,7 +1372,7 @@ function prevTourStep() {
 // Auto-trigger tour on very first visit
 window.addEventListener("load", () => {
     setTimeout(() => {
-        if (!localStorage.getItem("biharToIsroTourDone")) {
+        if (!localStorage.getItem("biharToSihTourDone")) {
             startIntroTour();
         }
     }, 1200);

@@ -17,7 +17,7 @@ template_dir = os.path.join(base_dir, "templates")
 static_dir = os.path.join(base_dir, "static")
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 
-# Auto-generate required ISRO judging files on startup (safely handle read-only environments)
+# Auto-generate required SIH judging files on startup (safely handle read-only environments)
 try:
     data_engine.export_all_artifacts()
 except Exception as e:
@@ -102,7 +102,7 @@ def download_policy_report():
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Official ISRO Policy Report - Team NeuroAgent</title>
+    <title>Official SIH Policy Report - Team NeuroAgent</title>
     <style>
         body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1e293b; line-height: 1.6; padding: 40px; max-width: 1000px; margin: 0 auto; }}
         .header {{ border-bottom: 3px solid #00F2FE; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }}
@@ -130,8 +130,8 @@ def download_policy_report():
     </div>
     
     <div class="summary-box">
-        <h3 style="margin-top:0; color:#0f172a;">Executive Briefing for Municipal Authorities & ISRO Panel</h3>
-        <p>This official dossier consolidates thermal infrared sensor observations from <strong>ISRO VEDAS</strong> and <strong>Bhuvan</strong> satellite feeds across Delhi NCR hotspots. The average baseline Land Surface Temperature (LST) across monitored high-priority zones is currently <strong>{avg_lst}°C</strong>. By enforcing a Physics-Informed Multi-Strategy cooling intervention (Cool Roofs + Urban Forestry), simulated models verify a potential city-wide thermal drop of up to <strong>3.4°C</strong>.</p>
+        <h3 style="margin-top:0; color:#0f172a;">Executive Briefing for Municipal Authorities & SIH Panel</h3>
+        <p>This official dossier consolidates thermal infrared sensor observations from <strong>SIH VEDAS</strong> and <strong>Bhuvan</strong> satellite feeds across Delhi NCR hotspots. The average baseline Land Surface Temperature (LST) across monitored high-priority zones is currently <strong>{avg_lst}°C</strong>. By enforcing a Physics-Informed Multi-Strategy cooling intervention (Cool Roofs + Urban Forestry), simulated models verify a potential city-wide thermal drop of up to <strong>3.4°C</strong>.</p>
     </div>
     
     <div class="metrics">
@@ -172,14 +172,14 @@ def download_policy_report():
     </table>
     
     <div class="footer">
-        <div>Official Decision Support Document | Verified by ISRO VEDAS & Bhuvan Algorithms</div>
+        <div>Official Decision Support Document | Verified by SIH VEDAS & Bhuvan Algorithms</div>
         <div>Team NeuroAgent - SIH (SMART INDIA HACKATHON)</div>
     </div>
 </body>
 </html>"""
 
     output = make_response(html_content)
-    output.headers["Content-Disposition"] = "attachment; filename=Official_ISRO_Policy_Report_NeuroAgent.html"
+    output.headers["Content-Disposition"] = "attachment; filename=Official_SIH_Policy_Report_NeuroAgent.html"
     output.headers["Content-type"] = "text/html"
     return output
 
