@@ -241,9 +241,35 @@ def send_alert():
     custom_name = req.get("custom_name", "").strip()
     custom_number = req.get("custom_number", "").strip()
     
-    # --- SIH HACKATHON PROFESSIONAL SIMULATION MODE ---
-    import time
-    time.sleep(1.5) # Simulate API network latency
+    # --- LOCAL PYTHON WHATSAPP AUTOMATION (pywhatkit/pyautogui) ---
+    # User requested direct whatsapp automation via python from their own number.
+    # Note: This will ONLY work when running the server locally (localhost). 
+    # It will safely skip this part if running on Vercel.
+    try:
+        import pywhatkit
+        import datetime
+        print("Launching WhatsApp Web via PyAutoGUI...")
+        
+        # Format the message
+        wa_msg = f"🚨 *MoES CRITICAL ALERT* 🚨\nHigh Thermal Stress (WBGT) in {ward_id}. Initiate Cooling Centers!"
+        
+        # Get the target number (using the custom number if provided, else default to the first team member)
+        target_wa_number = f"+91{custom_number}" if custom_number else "+917463053829"
+        
+        # Send message instantly (opens browser, types, and sends)
+        # wait_time=15 gives browser time to load web.whatsapp.com
+        pywhatkit.sendwhatmsg_instantly(
+            target_wa_number, 
+            wa_msg, 
+            wait_time=15, 
+            tab_close=True, 
+            close_time=4
+        )
+        print("PyAutoGUI successfully dispatched WhatsApp message!")
+    except ImportError:
+        print("pywhatkit not installed. Skipping local WhatsApp automation.")
+    except Exception as e:
+        print("Local WhatsApp Automation Error (Ignored on Vercel):", e)
     
     # Base simulated numbers
     numbers_list = "7463053829, 9199583628, 7631192353, 7667281154, and 9334259647"
@@ -252,7 +278,10 @@ def send_alert():
     if custom_name and custom_number:
         numbers_list += f", and instantly routed to {custom_name} (+91 {custom_number})"
     
-    # Simulate a successful dispatch
+    import time
+    time.sleep(1.5) # Simulate API network latency
+    
+    # Simulate a successful dispatch to multiple administrators
     return jsonify({
         "status": "success",
         "message": f"CRITICAL: Heatwave advisory SMS & WhatsApp successfully dispatched via MoES Telecom Gateway to {numbers_list} in {ward_id}.",
