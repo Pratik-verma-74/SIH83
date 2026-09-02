@@ -120,7 +120,7 @@ def download_policy_report():
 <body>
     <div class="header">
         <div>
-            <div class="subtitle">ISRO Hackathon 2026 | PS1 Urban Cooling Action Plan</div>
+            <div class="subtitle">SIH (SMART INDIA HACKATHON) | PS1 Urban Cooling Action Plan</div>
             <h1>EXECUTIVE URBAN HEAT MITIGATION REPORT</h1>
         </div>
         <div style="text-align: right;">
@@ -173,7 +173,7 @@ def download_policy_report():
     
     <div class="footer">
         <div>Official Decision Support Document | Verified by ISRO VEDAS & Bhuvan Algorithms</div>
-        <div>Team NeuroAgent - ISRO Hackathon 2026</div>
+        <div>Team NeuroAgent - SIH (SMART INDIA HACKATHON)</div>
     </div>
 </body>
 </html>"""

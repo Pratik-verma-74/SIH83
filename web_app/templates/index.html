@@ -31,10 +31,10 @@
         <!-- Top Telemetry Header -->
         <header class="top-header">
             <div class="brand-logo">
-                <div class="logo-icon"><i class="fa-solid fa-temperature-arrow-up" style="color: #FF5722;"></i></div>
+                <div class="logo-icon"><i class="fa-solid fa-satellite-dish" style="color: #00F2FE;"></i></div>
                 <div class="logo-text">
-                    <h1>MINISTRY OF EARTH SCIENCES <span>(MoES)</span></h1>
-                    <p>Human Thermal Stress & Heatwave Early Warning System</p>
+                    <h1>TEAM BIHARTOISI</h1>
+                    <p>SIH VEDAS & BHUVAN POWER ENGINE</p>
                 </div>
             </div>
             
@@ -72,28 +72,48 @@
 
         <div class="main-workspace">
             <!-- Left Navigation Sidebar -->
-            <aside class="sidebar">
-                <div class="nav-section-title">HEATWAVE MODULES</div>
+            <aside class="sidebar" style="overflow-y: auto;">
+                <div class="nav-section-title">MISSION MODULES</div>
                 <nav class="nav-menu">
                     <a href="#" class="nav-item active" data-tab="module-1">
                         <i class="fa-solid fa-map-location-dot"></i>
-                        <span>1. Real-Time Risk Map</span>
+                        <span>1. Real-Time UHI Mapping</span>
                     </a>
                     <a href="#" class="nav-item" data-tab="module-2">
                         <i class="fa-solid fa-magnifying-glass-chart"></i>
-                        <span>2. WBGT Stress Index</span>
+                        <span>2. Spatial Climate Audit</span>
                     </a>
                     <a href="#" class="nav-item" data-tab="module-3">
                         <i class="fa-solid fa-brain"></i>
-                        <span>3. Mortality Predictor</span>
+                        <span>3. AI Decision Engine</span>
                     </a>
-                    <a href="#" class="nav-item highlight-item" data-tab="module-4">
-                        <i class="fa-solid fa-tower-broadcast"></i>
-                        <span>4. Alert Dashboard <span class="badge" style="background:#EF4444; color:#fff;">LIVE</span></span>
+                    <a href="#" class="nav-item" data-tab="module-4">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>4. Cooling Optimizer <span class="badge" style="background:#00F2FE; color:#000;">CORE</span></span>
                     </a>
                     <a href="#" class="nav-item" data-tab="module-5">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>5. 15-Yr Forecasting</span>
+                    </a>
+                    <a href="#" class="nav-item" data-tab="module-6">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span>6. Neighborhood Priority</span>
+                    </a>
+                    <a href="#" class="nav-item" data-tab="module-7">
                         <i class="fa-solid fa-file-shield"></i>
-                        <span>5. Public Advisories</span>
+                        <span>7. Policy Report</span>
+                    </a>
+                    <a href="#" class="nav-item" data-tab="module-8">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>8. AI Data Studio <span class="badge" style="background:#00F2FE; color:#000;">NEW</span></span>
+                    </a>
+
+                    <!-- NEW HEATWAVE WARNING SYSTEM MODULES -->
+                    <div class="nav-section-title" style="margin-top:20px; color:#EF4444; border-bottom: 1px solid rgba(239, 68, 68, 0.3);">MoES WARNING SYSTEM</div>
+                    
+                    <a href="#" class="nav-item highlight-item" data-tab="module-9">
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                        <span>9. Alert Dashboard <span class="badge" style="background:#EF4444; color:#fff;">LIVE</span></span>
                     </a>
                 </nav>
 
@@ -126,7 +146,7 @@
                                     <button class="btn-map-action" onclick="zoomMapIn()" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
                                     <button class="btn-map-action" onclick="zoomMapOut()" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
                                     <button class="btn-map-action" onclick="resetMapView()" title="Reset View"><i class="fa-solid fa-house-signal"></i> Reset</button>
-                                    <span class="live-tag" style="margin: 0 4px;"><i class="fa-solid fa-circle"></i> ISRO VEDAS THERMAL</span>
+                                    <span class="live-tag" style="margin: 0 4px;"><i class="fa-solid fa-circle"></i> SIH VEDAS THERMAL</span>
                                     <button id="fullscreen-toggle-btn" class="btn-fullscreen" onclick="toggleMapFullscreen()" title="Toggle Fullscreen">
                                         <i class="fa-solid fa-expand"></i> <span>[ ] Full Screen</span>
                                     </button>
@@ -162,7 +182,7 @@
                             <!-- Dynamic Satellite Layer Legend Bar -->
                             <div id="map-layer-legend" class="layer-legend-bar" style="margin-top: 14px; padding: 10px 16px; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-secondary);">
                                 <div id="legend-content" style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
-                                    <strong style="color: #EF4444;"><i class="fa-solid fa-layer-group"></i> ISRO VEDAS Legend:</strong>
+                                    <strong style="color: #EF4444;"><i class="fa-solid fa-layer-group"></i> SIH VEDAS Legend:</strong>
                                     <span><span style="display:inline-block;width:12px;height:12px;background:#EF4444;border-radius:3px;margin-right:4px;"></span>Critical (>45°C)</span>
                                     <span><span style="display:inline-block;width:12px;height:12px;background:#F59E0B;border-radius:3px;margin-left:8px;margin-right:4px;"></span>High Risk (43-45°C)</span>
                                     <span><span style="display:inline-block;width:12px;height:12px;background:#10B981;border-radius:3px;margin-left:8px;margin-right:4px;"></span>Moderate (≤43°C)</span>
@@ -251,8 +271,8 @@
                     <div id="ai-diagnostics-container" class="ai-cards-grid"></div>
                 </section>
 
-                <!-- MODULE 4: Multi-Strategy Cooling Optimizer -->
-                <section id="module-4" class="module-view">
+                <!-- MODULE 9: Live Public Alert Dashboard -->
+                <section id="module-9" class="module-view">
                     <div class="module-header">
                         <h2><i class="fa-solid fa-tower-broadcast"></i> Live Public Alert Dashboard</h2>
                         <p>Automatically triggers localized SMS and WhatsApp heatwave advisories to vulnerable demographics via MoES telecom integration.</p>
@@ -322,9 +342,17 @@
                             </div>
                         </div>
                     </div>
-
+                </section>
+                
+                <!-- MODULE 4: Multi-Strategy Cooling Optimizer -->
+                <section id="module-4" class="module-view">
+                    <div class="module-header">
+                        <h2><i class="fa-solid fa-sliders"></i> Multi-Strategy Cooling Optimizer</h2>
+                        <p>Simulate thermodynamic effects of urban interventions on peak LST using AI algorithms.</p>
+                    </div>
+                    
                     <!-- Cooling Potential by Strategy Bar Chart -->
-                    <div class="glass-card mt-4" style="margin-top: 24px;">
+                    <div class="glass-card mt-4">
                         <div class="card-title">
                             <h3><i class="fa-solid fa-chart-column"></i> AI/ML & Physics-Informed Cooling Potential by Strategy</h3>
                             <span class="live-tag" style="background:rgba(16,185,129,0.1); color:#10B981; border-color:#10B981;"><i class="fa-solid fa-brain"></i> DERIVED FROM DATASET TELEMETRY</span>
@@ -341,7 +369,7 @@
                     <div class="glass-card mt-4" style="margin-top: 24px;">
                         <div class="card-title">
                             <h3><i class="fa-solid fa-flask"></i> Physics-Informed Material Performance Comparison</h3>
-                            <span class="live-tag" style="background:rgba(0,242,254,0.1); color:var(--cyan-glow); border-color:var(--cyan-glow);"><i class="fa-solid fa-check-double"></i> ISRO VEDAS BENCHMARK</span>
+                            <span class="live-tag" style="background:rgba(0,242,254,0.1); color:var(--cyan-glow); border-color:var(--cyan-glow);"><i class="fa-solid fa-check-double"></i> SIH VEDAS BENCHMARK</span>
                         </div>
                         <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
                             Comparative thermodynamic properties and lifecycle economics of urban mitigation materials deployed across Delhi NCR and Patna hotspots.
@@ -408,7 +436,7 @@
                                 </tbody>
                             </table>
                             <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">
-                                *ET = Evapotranspiration cooling effect modeled via ISRO Bhuvan Surface Energy Balance algorithms.
+                                *ET = Evapotranspiration cooling effect modeled via SIH Bhuvan Surface Energy Balance algorithms.
                             </div>
                         </div>
                     </div>
@@ -431,7 +459,7 @@
                 <section id="module-6" class="module-view">
                     <div class="module-header">
                         <h2><i class="fa-solid fa-layer-group"></i> Neighborhood Vulnerability Prioritization</h2>
-                        <p>Budget-aware priority ranking matrix fusing ISRO VEDAS thermal exposure with WorldPop demographic density.</p>
+                        <p>Budget-aware priority ranking matrix fusing SIH VEDAS thermal exposure with WorldPop demographic density.</p>
                     </div>
                     <div class="glass-card table-card">
                         <!-- Zone Filter & AI Accuracy Bar -->
@@ -482,17 +510,17 @@
                 <section id="module-7" class="module-view">
                     <div class="module-header">
                         <h2><i class="fa-solid fa-file-shield"></i> Executive Policy Decision Report</h2>
-                        <p>Automated briefing summary generated by Team NeuroAgent for ISRO judging panels and municipal authorities.</p>
+                        <p>Automated briefing summary generated by Team NeuroAgent for SIH (SMART INDIA HACKATHON) judging panels and municipal authorities.</p>
                     </div>
                     <div class="glass-card report-card">
                         <div class="report-header">
                             <div>
                                 <h3>URBAN HEAT MITIGATION ACTION PLAN</h3>
-                                <span>Ref: NEUROAGENT-PS1-2026 | Powered by ISRO VEDAS, Bhuvan & WorldPop</span>
+                                <span>Ref: NEUROAGENT-PS1-2026 | Powered by SIH VEDAS, Bhuvan & WorldPop</span>
                             </div>
                             <div style="display:flex; gap:12px; flex-wrap:wrap;">
                                 <a href="/api/export_csv" class="btn-glow" style="text-decoration:none; background:rgba(16,185,129,0.2); border-color:#10B981;"><i class="fa-solid fa-file-csv"></i> Download CSV Plan</a>
-                                <a href="/api/download_policy_report" class="btn-glow" style="text-decoration:none; background:linear-gradient(135deg, rgba(0,242,254,0.2), rgba(79,172,254,0.2)); border-color:var(--cyan-glow); box-shadow: 0 0 15px rgba(0,242,254,0.4);"><i class="fa-solid fa-file-arrow-down"></i> 📥 Download Official ISRO Policy Report</a>
+                                <a href="/api/download_policy_report" class="btn-glow" style="text-decoration:none; background:linear-gradient(135deg, rgba(0,242,254,0.2), rgba(79,172,254,0.2)); border-color:var(--cyan-glow); box-shadow: 0 0 15px rgba(0,242,254,0.4);"><i class="fa-solid fa-file-arrow-down"></i> 📥 Download Official SIH Policy Report</a>
                             </div>
                         </div>
 
@@ -504,7 +532,7 @@
                             </div>
                             <div>
                                 <strong style="color: #00F2FE; font-size: 13px; display: block; margin-bottom: 4px;"><i class="fa-solid fa-bolt-lightning"></i> Disaster-Grade Fault Tolerance</strong>
-                                <span style="font-size: 11px; color: var(--text-muted);">Live Open-Meteo API with automated ISRO VEDAS local cache fallback. Guarantees 0ms downtime during extreme summer heatwaves.</span>
+                                <span style="font-size: 11px; color: var(--text-muted);">Live Open-Meteo API with automated SIH VEDAS local cache fallback. Guarantees 0ms downtime during extreme summer heatwaves.</span>
                             </div>
                             <div>
                                 <strong style="color: #F59E0B; font-size: 13px; display: block; margin-bottom: 4px;"><i class="fa-solid fa-scale-balanced"></i> Judicial Audit Transparency</strong>
@@ -514,7 +542,7 @@
 
                         <div class="report-body">
                             <h4>1. Executive Summary (Team NeuroAgent Analysis)</h4>
-                            <p>Analysis of multispectral thermal data from ISRO VEDAS and Bhuvan portals indicates severe heat trapping in commercial and high-density residential wards across Delhi NCR, with surface temperatures exceeding 46.0°C during peak summer hours. Without immediate intervention, urban sprawl is projected to add +2.4°C over the next 15 years.</p>
+                            <p>Analysis of multispectral thermal data from SIH VEDAS and Bhuvan portals indicates severe heat trapping in commercial and high-density residential wards across Delhi NCR, with surface temperatures exceeding 46.0°C during peak summer hours. Without immediate intervention, urban sprawl is projected to add +2.4°C over the next 15 years.</p>
                             
                             <h4>2. High-Priority Wards Immediate Outlay</h4>
                             <p>Immediate capital deployment is recommended for <strong>Chandni Chowk (W106)</strong>, <strong>Connaught Place (W101)</strong>, and <strong>Karol Bagh (W102)</strong>. These zones exhibit >85% concrete imperviousness coupled with critical population density defined by WorldPop India 100m grids.</p>
@@ -529,7 +557,7 @@
                 <section id="module-8" class="module-view">
                     <div class="module-header">
                         <h2><i class="fa-solid fa-cloud-arrow-up"></i> National Crowd-Sourced AI Data Studio & Federated Training Portal</h2>
-                        <p>Drag and drop raw satellite thermal rasters, built-up CSVs, or weather logs for any Indian city. Continuous learning pipelines calibrate XGBoost weights and push verified models to ISRO GitHub Cloud.</p>
+                        <p>Drag and drop raw satellite thermal rasters, built-up CSVs, or weather logs for any Indian city. Continuous learning pipelines calibrate XGBoost weights and push verified models to SIH GitHub Cloud.</p>
                     </div>
 
                     <div class="glass-card" style="padding: 24px; margin-bottom: 24px;">
@@ -540,7 +568,7 @@
                                 <input type="file" id="file-input-1" style="display:none" onchange="handleFileSelect(1, this.files[0])">
                                 <i class="fa-solid fa-satellite" style="font-size: 28px; color: #EF4444; margin-bottom: 8px;"></i>
                                 <strong style="display:block; font-size: 13px; color: #fff;">01_Satellite_LST</strong>
-                                <span style="font-size: 11px; color: var(--text-muted);">ISRO VEDAS Thermal (.zip/.csv)</span>
+                                <span style="font-size: 11px; color: var(--text-muted);">SIH VEDAS Thermal (.zip/.csv)</span>
                                 <div id="status-1" class="drop-status">Drop file or click</div>
                                 <button onclick="event.stopPropagation(); clearFileBox(1);" class="btn-clear-box" title="Remove file" style="display:none; margin-top:8px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; color:#EF4444; padding:2px 8px; border-radius:4px; font-size:10px; cursor:pointer;">✖ Remove</button>
                             </div>

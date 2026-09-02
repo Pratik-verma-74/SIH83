@@ -1,4 +1,4 @@
-// Team NeuroAgent | ISRO PS1 Urban Cooling Decision Support Platform Engine
+// Team NeuroAgent | SIH PS1 Urban Cooling Decision Support Platform Engine
 
 let wardsData = [];
 let mapInstance = null;
@@ -146,11 +146,11 @@ function switchMapLayer(layerName) {
     if (mapInstance && baseTileLayer) {
         mapInstance.removeLayer(baseTileLayer);
         let tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-        let attr = '&copy; Esri & ISRO VEDAS | Team NeuroAgent';
+        let attr = '&copy; Esri & SIH VEDAS | Team NeuroAgent';
         
         if (layerName === 'bhuvan') {
             tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-            attr = '&copy; Esri & ISRO Bhuvan High-Res Satellite | Team NeuroAgent';
+            attr = '&copy; Esri & SIH Bhuvan High-Res Satellite | Team NeuroAgent';
         } else if (layerName === 'ndvi') {
             tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
             attr = '&copy; Esri & OpenStreetMap | Team NeuroAgent';
@@ -169,7 +169,7 @@ function switchMapLayer(layerName) {
 
     if (liveTag) {
         if (layerName === 'vedas') {
-            liveTag.innerHTML = '<i class="fa-solid fa-circle"></i> ISRO VEDAS THERMAL';
+            liveTag.innerHTML = '<i class="fa-solid fa-circle"></i> SIH VEDAS THERMAL';
             liveTag.style.color = 'var(--red-critical)';
             liveTag.style.background = 'rgba(239, 68, 68, 0.15)';
             liveTag.style.borderColor = 'rgba(239, 68, 68, 0.3)';
@@ -195,7 +195,7 @@ function switchMapLayer(layerName) {
                 `;
             }
         } else if (layerName === 'bhuvan') {
-            liveTag.innerHTML = '<i class="fa-solid fa-satellite"></i> ISRO BHUVAN DARK';
+            liveTag.innerHTML = '<i class="fa-solid fa-satellite"></i> SIH BHUVAN DARK';
             liveTag.style.color = '#00F2FE';
             liveTag.style.background = 'rgba(0, 242, 254, 0.15)';
             liveTag.style.borderColor = 'rgba(0, 242, 254, 0.3)';
@@ -220,7 +220,7 @@ function initMap(wards) {
         mapInstance = L.map("leaflet-map", { zoomControl: false }).setView(delhiCoords, 11);
 
         baseTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-            attribution: '&copy; Esri & ISRO VEDAS | Team NeuroAgent',
+            attribution: '&copy; Esri & SIH VEDAS | Team NeuroAgent',
             maxZoom: 19
         }).addTo(mapInstance);
     }
@@ -279,7 +279,7 @@ function renderWardPolygons(wards) {
         } else if (currentMapLayer === "bhuvan") {
             fillColor = "#00F2FE";
             strokeColor = "#00F2FE";
-            layerSubtitle = `<span style="font-size:11px; color:#00F2FE;"><i class="fa-solid fa-satellite"></i> ISRO Bhuvan High-Res Structural</span>`;
+            layerSubtitle = `<span style="font-size:11px; color:#00F2FE;"><i class="fa-solid fa-satellite"></i> SIH Bhuvan High-Res Structural</span>`;
             primaryStat = `<span>Built-Up Albedo:</span> <strong style="color:#00F2FE; font-size:14px;">${w.concrete_density}% Concrete</strong>`;
             secondaryStat = `<span>Albedo Reflectivity:</span> <b style="color:#00F2FE;">${(0.85 - (w.concrete_density * 0.005)).toFixed(2)} Index</b>`;
             tooltipText = `<div style="text-align:center;"><b style="color:#00F2FE;"><i class="fa-solid fa-building-shield"></i> ${w.name}</b><br/>Built-Up Mass: <b>${w.concrete_density}%</b></div>`;
@@ -763,7 +763,7 @@ function initAuditChart(wards) {
             datasets: [
                 { label: 'HOT OSM Concrete %', data: concrete, backgroundColor: '#EF4444', borderRadius: 6 },
                 { label: 'Planetary Computer Green %', data: green, backgroundColor: '#10B981', borderRadius: 6 },
-                { label: 'ISRO Bhuvan Moisture %', data: moisture, backgroundColor: '#4FACFE', borderRadius: 6 }
+                { label: 'SIH Bhuvan Moisture %', data: moisture, backgroundColor: '#4FACFE', borderRadius: 6 }
             ]
         },
         options: {
