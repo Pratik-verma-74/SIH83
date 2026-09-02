@@ -1226,7 +1226,7 @@ You must answer questions about WBGT logic, AI Mortality Prediction, and Heat Ac
 Keep explanations crisp, professional, engaging, and highly informative.`;
 
     const payload = {
-        model: "llama3-8b-8192", 
+        model: "llama-3.1-8b-instant", 
         messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: text }
@@ -1396,9 +1396,22 @@ async function sendAlert(wardId) {
             const countEl = document.getElementById('sms-count');
             if (countEl) countEl.innerText = parseInt(countEl.innerText) + data.dispatched_count;
             alert(data.message);
+        } else {
+            btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Failed';
+            btn.style.background = '#EF4444';
+            btn.style.borderColor = '#EF4444';
+            alert("❌ SMS ERROR: " + data.message);
+            
+            // Reset button after 3 seconds so user can try again
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.style.background = "";
+                btn.style.borderColor = "";
+            }, 3000);
         }
     } catch (err) {
         console.error('Error sending alert:', err);
+        alert("❌ Network Error: Could not reach the Python Backend.");
         btn.innerHTML = originalHTML;
     }
 }
