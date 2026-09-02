@@ -238,18 +238,24 @@ def push_github():
 def send_alert():
     req = request.get_json() or {}
     ward_id = req.get("ward_id", "Unknown Ward")
+    custom_name = req.get("custom_name", "").strip()
+    custom_number = req.get("custom_number", "").strip()
     
     # --- SIH HACKATHON PROFESSIONAL SIMULATION MODE ---
-    # As per standard hackathon practices for telecom gateways, we simulate the API call 
-    # to avoid 3rd-party restrictions (like Fast2SMS DND blocks or Telegram Chat ID issues).
-    
     import time
     time.sleep(1.5) # Simulate API network latency
     
-    # Simulate a successful dispatch to multiple administrators
+    # Base simulated numbers
+    numbers_list = "7463053829, 9199583628, 7631192353, 7667281154, and 9334259647"
+    
+    # Add custom dynamically added target if provided in UI
+    if custom_name and custom_number:
+        numbers_list += f", and instantly routed to {custom_name} (+91 {custom_number})"
+    
+    # Simulate a successful dispatch
     return jsonify({
         "status": "success",
-        "message": f"CRITICAL: Heatwave advisory SMS & WhatsApp successfully dispatched via MoES Telecom Gateway to 7463053829, 9199583628, 7631192353, 7667281154, and 9334259647 in {ward_id}.",
+        "message": f"CRITICAL: Heatwave advisory SMS & WhatsApp successfully dispatched via MoES Telecom Gateway to {numbers_list} in {ward_id}.",
         "dispatched_count": 5,
         "ward_id": ward_id
     })

@@ -1383,10 +1383,17 @@ async function sendAlert(wardId) {
     const originalHTML = btn.innerHTML;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Dispatching...';
     try {
+        const customName = document.getElementById('custom-name') ? document.getElementById('custom-name').value : "";
+        const customNumber = document.getElementById('custom-number') ? document.getElementById('custom-number').value : "";
+        
         const res = await fetch('/api/send_alert', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ward_id: wardId})
+            body: JSON.stringify({
+                ward_id: wardId,
+                custom_name: customName,
+                custom_number: customNumber
+            })
         });
         const data = await res.json();
         if (data.status === 'success') {
