@@ -262,15 +262,27 @@ def send_alert():
         with urllib.request.urlopen(req_obj) as response:
             res_data = json.loads(response.read().decode("utf-8"))
             print("Fast2SMS Response:", res_data)
+            
+            # Forward the actual response from Fast2SMS to the frontend
+            if res_data.get("return") == True:
+                return jsonify({
+                    "status": "success",
+                    "message": f"CRITICAL: Heatwave advisory SMS successfully dispatched! {res_data.get('message', '')}",
+                    "dispatched_count": len(target_number.split(',')),
+                    "ward_id": ward_id
+                })
+            else:
+                return jsonify({
+                    "status": "error",
+                    "message": f"Fast2SMS API Failed: {res_data.get('message', 'Unknown Error')}"
+                }), 400
+
     except Exception as e:
         print("Fast2SMS Error:", e)
-
-    return jsonify({
-        "status": "success",
-        "message": f"CRITICAL: Heatwave advisory SMS dispatched to {target_number} for {ward_id}.",
-        "dispatched_count": 1,
-        "ward_id": ward_id
-    })
+        return jsonify({
+            "status": "error",
+            "message": f"Backend Error connecting to SMS Gateway: {str(e)}"
+        }), 500
 
 @app.route("/api/chat", methods=["POST"])
 def ai_chat():
