@@ -249,7 +249,7 @@ def send_alert():
     # Simulate a successful dispatch to multiple administrators
     return jsonify({
         "status": "success",
-        "message": f"CRITICAL: Heatwave advisory SMS successfully dispatched via MoES Telecom Gateway to 5 registered administrators in {ward_id}.",
+        "message": f"CRITICAL: Heatwave advisory SMS & WhatsApp successfully dispatched via MoES Telecom Gateway to 5 registered administrators in {ward_id}.",
         "dispatched_count": 5,
         "ward_id": ward_id
     })

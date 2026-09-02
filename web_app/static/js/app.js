@@ -1390,7 +1390,7 @@ async function sendAlert(wardId) {
         });
         const data = await res.json();
         if (data.status === 'success') {
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> SMS Sent';
+            btn.innerHTML = '<i class="fa-solid fa-check-double"></i> SMS & WhatsApp Sent';
             btn.style.background = '#10B981';
             btn.style.borderColor = '#10B981';
             const countEl = document.getElementById('sms-count');
