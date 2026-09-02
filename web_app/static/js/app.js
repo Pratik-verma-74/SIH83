@@ -1383,7 +1383,7 @@ async function sendAlert(wardId) {
     const originalHTML = btn.innerHTML;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Dispatching...';
     try {
-        const customName = document.getElementById('custom-name') ? document.getElementById('custom-name').value : "";
+        const customMessage = document.getElementById('custom-message') ? document.getElementById('custom-message').value : "";
         const customNumber = document.getElementById('custom-number') ? document.getElementById('custom-number').value : "";
         
         const res = await fetch('/api/send_alert', {
@@ -1391,7 +1391,7 @@ async function sendAlert(wardId) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 ward_id: wardId,
-                custom_name: customName,
+                custom_message: customMessage,
                 custom_number: customNumber
             })
         });

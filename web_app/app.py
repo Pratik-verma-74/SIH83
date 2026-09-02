@@ -238,54 +238,74 @@ def push_github():
 def send_alert():
     req = request.get_json() or {}
     ward_id = req.get("ward_id", "Unknown Ward")
-    custom_name = req.get("custom_name", "").strip()
+    custom_msg_input = req.get("custom_message", "").strip()
     custom_number = req.get("custom_number", "").strip()
     
-    # --- LOCAL PYTHON WHATSAPP AUTOMATION (pywhatkit/pyautogui) ---
-    # User requested direct whatsapp automation via python from their own number.
-    # Note: This will ONLY work when running the server locally (localhost). 
-    # It will safely skip this part if running on Vercel.
+    # Base simulated numbers if nothing is provided
+    if not custom_number:
+        numbers_list = ["7463053829", "9199583628", "7631192353", "7667281154", "9334259647"]
+    else:
+        # Split by comma and clean up spaces
+        numbers_list = [n.strip() for n in custom_number.split(",") if n.strip()]
+        
+    # --- FAST WHATSAPP AUTOMATION (Webbrowser + PyAutoGUI) ---
     try:
-        import pywhatkit
-        import datetime
-        print("Launching WhatsApp Web via PyAutoGUI...")
+        import webbrowser
+        import pyautogui
+        import time
+        import urllib.parse
         
-        # Format the message
-        wa_msg = f"🚨 *MoES CRITICAL ALERT* 🚨\nHigh Thermal Stress (WBGT) in {ward_id}. Initiate Cooling Centers!"
+        print(f"Launching fast WhatsApp automation for {len(numbers_list)} numbers...")
         
-        # Get the target number (using the custom number if provided, else default to the first team member)
-        target_wa_number = f"+91{custom_number}" if custom_number else "+917463053829"
-        
-        # Send message instantly (opens browser, types, and sends)
-        # wait_time=15 gives browser time to load web.whatsapp.com
-        pywhatkit.sendwhatmsg_instantly(
-            target_wa_number, 
-            wa_msg, 
-            wait_time=15, 
-            tab_close=True, 
-            close_time=4
+        # Use custom message if provided, else use the highly professional Hindi MoES alert
+        default_msg = (
+            f"🚨 *MoES Heatwave Alert* 🚨\n"
+            f"⚠️ *चेतावनी*: {ward_id} में अगले 48 घंटों में अत्यधिक Thermal Stress (WBGT) की संभावना है।\n\n"
+            f"👉 *सलाह*:\n"
+            f"- Outdoor activities कम करें।\n"
+            f"- Cooling arrangements और emergency protocols तुरंत लागू करें।"
         )
-        print("PyAutoGUI successfully dispatched WhatsApp message!")
+        wa_msg = custom_msg_input if custom_msg_input else default_msg
+        
+        for num in numbers_list:
+            # Ensure number has country code
+            target_wa_number = num if num.startswith("+") else f"+91{num}"
+            
+            # Open WhatsApp Web directly to the chat with pre-filled text
+            parsed_msg = urllib.parse.quote(wa_msg)
+            wa_url = f"https://web.whatsapp.com/send?phone={target_wa_number}&text={parsed_msg}"
+            webbrowser.open(wa_url)
+            
+            # Wait for the chat to fully load (10-12s)
+            time.sleep(12)
+            
+            # Force submit the message
+            pyautogui.press('enter')
+            time.sleep(1) # Extra enter just in case
+            pyautogui.press('enter')
+            
+            # Wait 2 seconds for message to actually send before closing tab
+            time.sleep(2)
+            pyautogui.hotkey('ctrl', 'w') # Close tab automatically
+            time.sleep(1) # Brief pause before next iteration
+            
+        print("Fast PyAutoGUI successfully submitted ALL WhatsApp messages!")
     except ImportError:
-        print("pywhatkit not installed. Skipping local WhatsApp automation.")
+        print("pyautogui not installed. Skipping local WhatsApp automation.")
     except Exception as e:
-        print("Local WhatsApp Automation Error (Ignored on Vercel):", e)
-    
-    # Base simulated numbers
-    numbers_list = "7463053829, 9199583628, 7631192353, 7667281154, and 9334259647"
-    
-    # Add custom dynamically added target if provided in UI
-    if custom_name and custom_number:
-        numbers_list += f", and instantly routed to {custom_name} (+91 {custom_number})"
+        print("Local WhatsApp Automation Error:", e)
     
     import time
     time.sleep(1.5) # Simulate API network latency
     
+    # Format numbers beautifully for the success popup
+    display_numbers = ", ".join(numbers_list)
+    
     # Simulate a successful dispatch to multiple administrators
     return jsonify({
         "status": "success",
-        "message": f"CRITICAL: Heatwave advisory SMS & WhatsApp successfully dispatched via MoES Telecom Gateway to {numbers_list} in {ward_id}.",
-        "dispatched_count": 5,
+        "message": f"CRITICAL: Emergency Broadcast successfully dispatched via MoES Telecom Gateway to {display_numbers} in {ward_id}.",
+        "dispatched_count": len(numbers_list),
         "ward_id": ward_id
     })
 

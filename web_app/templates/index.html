@@ -313,12 +313,12 @@
 
                             <!-- Custom Contact Input -->
                             <div class="breakdown-list" style="margin-top: 15px;">
-                                <h4 style="margin-bottom: 8px; color: #00F2FE;"><i class="fa-solid fa-user-plus"></i> Add Instant Custom Contact</h4>
-                                <div style="display: flex; gap: 8px;">
-                                    <input type="text" id="custom-name" placeholder="Official Name" style="flex: 1; padding: 10px; border-radius: 6px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #E2E8F0; font-size: 13px;">
-                                    <input type="text" id="custom-number" placeholder="Mobile Number" style="flex: 1; padding: 10px; border-radius: 6px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #E2E8F0; font-size: 13px;">
+                                <h4 style="margin-bottom: 8px; color: #00F2FE;"><i class="fa-solid fa-bullhorn"></i> Custom Broadcast Setup</h4>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <textarea id="custom-message" placeholder="Type custom emergency message here... (Leave blank for default MoES advisory)" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #E2E8F0; font-size: 13px; min-height: 60px; resize: vertical;"></textarea>
+                                    <input type="text" id="custom-number" placeholder="Recipient Numbers (e.g. 7463053829, 9199583628)" style="width: 100%; padding: 10px; border-radius: 6px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #E2E8F0; font-size: 13px;">
                                 </div>
-                                <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">*Adding a number here will dynamically route the simulated SMS/WhatsApp alert to them.</p>
+                                <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">*Enter multiple 10-digit mobile numbers separated by commas. Leave blank to use default team numbers.</p>
                             </div>
                         </div>
                     </div>
